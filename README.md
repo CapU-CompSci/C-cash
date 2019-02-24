@@ -1,7 +1,7 @@
-# C-cash
+# C-creds
 Comp120 Blockchain starter project
 
-C modules and test drivers for C-cash application -- a simple blockchain demo using ArrayList and Doubly-Linked-List ADTs.
+C modules and test drivers for C-creds application -- a simple blockchain demo using ArrayList and Doubly-Linked-List ADTs.
 
 ## Dependencies
  * https://github.com/clibs/sha1
