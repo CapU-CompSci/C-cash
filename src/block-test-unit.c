@@ -13,7 +13,7 @@
 #include <time.h>
 #include <assert.h>
 
-#include "trnslist.h"
+#include "credential.h"
 #include "puzzle.h"
 #include "block.h"
 
@@ -46,14 +46,11 @@ void main()
    int failed_test_counter = 0;
    printf("Unit Test Suite for block chain BLOCK ADT operations...\n");
    
-   TransactionList t1 = tlistCreate();
-   for (i=0; i<5; i++) {
-      tlistAppend(&t1, "Dave", (i+3)*2+99.0/(i+1), "Circi");
-   }
+   Credential c1 = credCreate("BSc. Data Science", "Capilano University", "Kermit Frog" );
 
    // Test 1: Constructor
    printf("1");
-   Block_t* block1 = blkCreate(t1, MINING_DIFFICULTY, NULL_NONCE);
+   Block_t* block1 = blkCreate(c1, MINING_DIFFICULTY, NULL_NONCE);
    printf(".");
 
    // Test 2: CreatePuzzle
@@ -75,13 +72,10 @@ void main()
    failed_test_counter += run_test(strcmp(block1->hash, NULL_HASH)==0, false, "Block hash is not updated.");
    printf(".");
    
-   // Test 5: Link Blocks
+   // Test 5: Link Blocks  (white-box tests)
    printf("5");
-   TransactionList t2 = tlistCreate();
-   for (i=0; i<5; i++) {
-      tlistAppend(&t2, "Jan", (i+2)*3+69.0/(i+2), "Bob");
-   }
-   Block_t* block2 = blkCreate(t2, MINING_DIFFICULTY, NULL_NONCE);
+   Credential c2 = credCreate("MRM", "SFU", "Eva");
+   Block_t* block2 = blkCreate(c2, MINING_DIFFICULTY, NULL_NONCE);
    printf(".");
    puzzle = blkCreatePuzzle(*block2, block1->hash);
    printf(".");
@@ -95,7 +89,7 @@ void main()
    failed_test_counter += run_test(block2->prev==block1, true, "Block prev link not set correctly.");
    printf(".");
    
-   // Test 6: Destructor (white-box tests)
+   // Test 6: Destructor 
    printf("6");
    blkDelete(block1);
    block1 = NULL;

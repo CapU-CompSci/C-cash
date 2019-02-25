@@ -1,10 +1,12 @@
 /**
  *  Block ADT : public interface
  *    Block:  One Node in a BlockChain
+ * 
+ * Dependencies: credential.h, puzzle.h
  *
  *  COMP220: Assignment 3
  *  Author:  Joseph Fall
- *  Date:    Feb. 1, 2018
+ *  Date:    Feb. 1, 2019
  */
  
 /*******************
@@ -13,7 +15,7 @@
 typedef struct Block_s Block_t;
 struct  Block_s {
     int id;                         // a unique identifier for this Block
-    TransactionList transactions;   // the list of transactions recorded by this Block
+    Credential credential;          // the credential recorded by this Block
     Nonce_t proof_of_work;          // a Nonce that produces a valid hash for this Block
     Hash_t hash;                    // a hash of this Block, stored as a C-string
     int difficulty;                 // the level of difficulty to find the Block's proof_of_work
@@ -26,10 +28,10 @@ struct  Block_s {
  *********************/
  
 /*
- * Constructor - return pointer to new block to lock given data 
- * POST:  tlistLen(list) == 0
+ * Constructor - return pointer to new block to lock given credential
+ *  Dynamic data in c are owned by this Block and will be deleted when this Block is deleted!
  */
-Block_t* blkCreate(TransactionList t, int difficulty, Nonce_t proof_of_work );
+Block_t* blkCreate(Credential c, int difficulty, Nonce_t proof_of_work );
 
 /*
  * Destructor - free all dynamic memory associated with the given block
@@ -38,9 +40,9 @@ void blkDelete(Block_t* block);
 
 /*
  * Create a serial representation of the block data, stored to buf as a C-string
- * PRE: buf has at least tlistSerialLen(block.transactions)+1 bytes allocated
+ * PRE: buf has at least credSerialLen(block.credential)+1 bytes allocated
  */
-void blkSerializeTransactions(const Block_t block, char* buf);
+void blkSerialize(const Block_t block, char* buf);
 
 /*
  *  Return the puzzle whose solution "locks" the given block using the hash of the previous block

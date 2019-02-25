@@ -13,7 +13,7 @@
 #include <time.h>
 #include <assert.h>
 
-#include "trnslist.h"
+#include "credential.h"
 #include "puzzle.h"
 #include "block.h"
 
@@ -21,13 +21,13 @@
  * BLOCK private implementation details
  ***********************/
 
-// Dynamic transactions in t are owned by this Block and will be deleted when this Block is deleted!
-Block_t* blkCreate(TransactionList t, int difficulty, Nonce_t proof_of_work ) {
-   static int id = 0;
+// Dynamic data in c are owned by this Block and will be deleted when this Block is deleted!
+Block_t* blkCreate(Credential c, int difficulty, Nonce_t proof_of_work ) {
+   static int id = 0;   // This should be a UUID, simplified for use in comp220
    id++;
    Block_t* block = malloc(sizeof(Block_t));
    block->id = id;
-   block->transactions = t;
+   block->credential = c;
    block->proof_of_work = proof_of_work;
    block->difficulty = difficulty;
    strcpy(block->hash, NULL_HASH);
@@ -36,18 +36,18 @@ Block_t* blkCreate(TransactionList t, int difficulty, Nonce_t proof_of_work ) {
 }
 
 void blkDelete(Block_t* block) {
-   tlistDelete(&block->transactions);
+   credDelete(&block->credential);
    free(block);
 }
 
-void blkSerializeTransactions(const Block_t block, char* buf) {
-   tlistSerialize(block.id, block.transactions, buf);
+void blkSerialize(const Block_t block, char* buf) {
+   credSerialize(block.credential, buf);
 }
 
 // It's up to the caller to delete the Puzzle that is returned.
 Puzzle_t blkCreatePuzzle(const Block_t block, const Hash_t prev_hash) {
-   char buf[tlistSerialLen(block.transactions)+1];
-   blkSerializeTransactions(block, buf);
+   char buf[credSerialLen(block.credential)+1];
+   blkSerialize(block, buf);
    return puzzleCreate(buf, prev_hash, block.difficulty);
 }
 
